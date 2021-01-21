@@ -3,6 +3,7 @@ library(ggplot2)
 library(ggradar)
 suppressPackageStartupMessages(library(dplyr))
 library(scales)
+library(fmsb)
 
 csv <-read_delim('data/ng-clients.csv',
             delim =',',
@@ -44,10 +45,11 @@ segment_graph <- datos %>%
             segmento_min = min(segmento),
             segmento_sd = sd(segmento))
 
+
 datos %>%
   ggplot(aes(x = segmento)) +
   geom_bar()
-ggsave("displ_box_plot_segment.png")
+ggsave("displ_bar_segment.png")
 
 
 datos %>%
@@ -59,12 +61,32 @@ ggsave("displ_box_plot_segment_edad.png")
 datos %>%
   ggplot(aes(x = edad)) +
   geom_histogram()
-ggsave("displ_box_plot_edad.png")
-
+ggsave("displ_histogram_edad.png")
 
 datos %>%
-     add_rownames( var = "segmento" ) %>%
-     mutate_each(funs(rescale), -segmento) %>%
-     tail(4) %>% select(1:10) -> segmento_radar
-ggradar(segmento_radar) 
-ggsave("displ_spider_segment.png")
+  ggplot(aes(x = origen)) +
+  geom_bar()
+ggsave("displ_bar_origen.png")
+
+datos %>%
+  ggplot(aes(x = origen, y = edad)) +
+  geom_boxplot()
+ggsave("displ_box_plot_origen_edad.png")
+
+datos %>%
+  ggplot(aes(x=segmento, y=origen)) + 
+    geom_count(color = "darkred") +
+    scale_size(range=c(2, 15))
+ggsave("displ_bubble_origen_segmento.png")
+
+datos %>%
+  ggplot(aes(x=segmento, y=estado)) + 
+  geom_count(color = "darkred") +
+  scale_size(range=c(2, 15))
+ggsave("displ_bubble_estado_segmento.png")
+
+datos %>%
+  ggplot(aes(x=estado, y=origen)) + 
+  geom_count(color = "darkred") +
+  scale_size(range=c(2, 15))
+ggsave("displ_bubble_origen_estado.png")
